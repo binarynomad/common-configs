@@ -39,4 +39,6 @@ reset_sshd_hostkeys() {
 # -------------------------------------
 
 reset_sshd_hostkeys
+install_ssh_key
+
 
