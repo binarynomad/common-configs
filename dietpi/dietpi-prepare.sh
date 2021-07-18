@@ -7,10 +7,11 @@
 # description : script to perform initial setup of a dietpi that is not able to be automated by the dietpi.txt file.
 # ----------------------------------------------------------------------------
 
-## DRAFT ##
-# https://devhints.io/bash
-#
-#
+# -------------------------------------
+# Variables
+# -------------------------------------
+
+export SSH_KEY_LOCATION="https://github.com/binarynomad.keys"
 
 # -------------------------------------
 # Functions
@@ -19,7 +20,7 @@
 install_ssh_key() {
   # Installs an known ssh_key from a url, generally from github
   mkdir $HOME/.ssh
-  curl https://github.com/binarynomad.keys >> $HOME/.ssh/authorized_keys
+  curl $1 >> $HOME/.ssh/authorized_keys
   chmod 600 $HOME/.ssh/authorized_keys
 }
 
@@ -38,7 +39,7 @@ reset_sshd_hostkeys() {
 # Main Program
 # -------------------------------------
 
+install_ssh_key ${SSH_KEY_LOCATION}
 reset_sshd_hostkeys
-install_ssh_key
 
 
