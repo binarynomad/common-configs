@@ -20,6 +20,7 @@ export SSH_KEY_LOCATION="https://github.com/binarynomad.keys"
 install_ssh_key() {
   # Installs an known ssh_key from a url, generally from github
   mkdir $HOME/.ssh
+  chmod 750 $HOME/.ssh
   curl $1 >> $HOME/.ssh/authorized_keys
   chmod 600 $HOME/.ssh/authorized_keys
 }
