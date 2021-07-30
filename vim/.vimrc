@@ -2,7 +2,7 @@
 " VIMRC SYSTEM SETTINGS
 " Version: 2021-07-28
 " ----------------------------------------
-" vim -u NONE (to ignore .vimrc)
+" vim --clean (to run default vim)
 
 " ---- CONFIGS: VIM Environment ---- {{{1
 
@@ -305,7 +305,7 @@ if !isdirectory($VIMHOME."/after/ftplugin")
 
 "---Vim Settings--- {{{2
 let vim_settings=[
-\ 'set foldmethod=marker       " set for editing the .vimrc file' 
+\ 'set foldmethod=marker       " set for editing the .vimrc file'
 \]"
 call writefile(vim_settings, $VIMHOME."/after/ftplugin/vim.vim")
 
@@ -361,7 +361,8 @@ call plug#begin('~/.vim/plugged')
 
 "---TESTING Plugins---
 
-Plug 'tpope/vim-markdown'               " markdown syntax and list management
+Plug 'chrisbra/csv.vim'   " plugin to edit CSV files (2021-07-29)
+Plug 'tpope/vim-markdown' " markdown syntax and list management
 
 
 "---General Env Plugins---
@@ -374,7 +375,7 @@ Plug 'gilsondev/searchtasks.vim'        " tasklist_summary; SearchTasks
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }  "fuzzy file searching
 Plug 'junegunn/fzf.vim'                 " fuzzy searching of vim (commands, bufferec, history, etc)
 Plug 'junegunn/goyo.vim'                " distraction_free
-Plug 'junegunn/limelight.vim'           " dulls colors of paragraphs surrounding foused text 
+Plug 'junegunn/limelight.vim'           " dulls colors of paragraphs surrounding foused text
 Plug 'junegunn/vim-easy-align'          " align text in columns on markers
 Plug 'lingceng/z.vim'                   " dir_jump: uses Z for your most used dirs
 Plug 'liuchengxu/vim-which-key'         " show some of your mappings live
