@@ -1,6 +1,8 @@
 " ----------------------------------------
 " VIMRC SYSTEM SETTINGS
+" Version: 2021-07-28
 " ----------------------------------------
+" vim -u NONE (to ignore .vimrc)
 
 " ---- CONFIGS: VIM Environment ---- {{{1
 
@@ -18,15 +20,12 @@ let maplocalleader=","
 " Map <leader>-; as alternative for : to make it easier
 nnoremap <Leader>; :
 
-" Fast saving
-nnoremap <leader>w :<C-u>update<cr>
-
 " Move macro recording to Q instead of q
 nnoremap Q q
 nnoremap q <Nop>
 
 " Map to make it easier to force quit after notification
-cnoremap QQ q!
+cnoremap qq q!
 nnoremap <Leader>vq :quit<CR>
 
 " Map <leader>-w to act like ctrl-w for windows
@@ -83,8 +82,11 @@ nnoremap <Leader><space> za
 " Map F2 to all visable line numbers and special chars (for copy)
 nmap <F2> :set norelativenumber!<bar>set nonumber!<bar>set nolist!<CR>
 
-" Save a file as root (,W)
+" Save a file as root (L-W)
 noremap <leader>W :w !sudo tee % > /dev/null<CR>
+
+" Allow searching of a visual selection (//)
+vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
 
 " ---File Directory Setup--- {{{2
 
@@ -116,7 +118,7 @@ set backupskip=/tmp/*,/private/tmp/*
 
 " ---- CONFIGS: Application Specific ---- {{{1
 
-" ARGWRAP : Reformats lists from one to multiline (L-1)
+" ARGWRAP : Reformats Python lists between one to multiline (L-1)
 nnoremap <silent> <leader>1 :ArgWrap<CR>
 
 " WHICHKEY : Activate to see what is mapped to Leader (L)
@@ -161,16 +163,17 @@ autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
 nnoremap <Leader>gy :Goyo<CR>
 
-" MULTIPLE SELECT : Like Sublime, Multi Cursor (C-n)
-let g:multi_cursor_use_default_mapping=0
-let g:multi_cursor_start_word_key      = '<C-n>'
-let g:multi_cursor_select_all_word_key = '<A-n>'
-let g:multi_cursor_start_key           = 'g<C-n>'
-let g:multi_cursor_select_all_key      = 'g<A-n>'
-let g:multi_cursor_next_key            = '<C-n>'
-let g:multi_cursor_prev_key            = '<C-p>'
-let g:multi_cursor_skip_key            = '<C-x>'
-let g:multi_cursor_quit_key            = '<Esc>'
+" TODO: DELETE ME AFTER 2021-08-30 if I don't notice
+" " MULTIPLE SELECT : Like Sublime, Multi Cursor (C-n)
+" let g:multi_cursor_use_default_mapping=0
+" let g:multi_cursor_start_word_key      = '<C-n>'
+" let g:multi_cursor_select_all_word_key = '<A-n>'
+" let g:multi_cursor_start_key           = 'g<C-n>'
+" let g:multi_cursor_select_all_key      = 'g<A-n>'
+" let g:multi_cursor_next_key            = '<C-n>'
+" let g:multi_cursor_prev_key            = '<C-p>'
+" let g:multi_cursor_skip_key            = '<C-x>'
+" let g:multi_cursor_quit_key            = '<Esc>'
 
 " SEARCHTASKS : Search files for tags like TODO (L-st)
 " note: use the function ClearQuickfillList (L-cc) to free up
@@ -217,6 +220,8 @@ let g:markdown_fenced_languages = ['html', 'python', 'bash=sh']
 " UNDOTREE : program to visualize/switch unto changes (F5)
 nnoremap <F5> :UndotreeToggle<cr>
 
+" SNIPMATE : Plugin that allows for smart/responsive text snippets
+let g:snipMate = { 'snippet_version' : 1 }
 
 " ---- SETTINGS: General Editor ---- {{{1
 
@@ -250,7 +255,7 @@ set title  " Show the filename in the window titlebar
 syntax on  " Enable syntax highlighting
 
 "---General Folding Settings---
-set foldenable  " enable folding by default on file open
+set nofoldenable  " disable folding by default on file open
 set foldlevel=0  " fold everything except the top level
 set foldlevelstart=0  " fold everything except the top level
 set foldmethod=marker  " [manual, marker, indent, syntax]
@@ -376,7 +381,7 @@ Plug 'liuchengxu/vim-which-key'         " show some of your mappings live
 Plug 'mbbill/undotree'                  " full undo tracking and diffs
 Plug 'mhinz/vim-startify'               " vim startup splashscreen
 Plug 'scrooloose/nerdtree'              " file_tree: remap <Leader>f<CR>
-Plug 'terryma/vim-multiple-cursors'     " multi_cursor: Ctl-n
+" Plug 'terryma/vim-multiple-cursors'     " multi_cursor: Ctl-n
 
 "---TextObj Plugins---
 Plug 'glts/vim-textobj-comment'         " vic: select all in commented block
@@ -479,7 +484,7 @@ iab abline # -------------------------------------
 " ---- FUNCTIONS: User Functions ---- {{{1
 
 " ---DiffWithSaved--- {{{2
-" function: to see unsaved changes side by side
+" function: to see unsaved changes side by side (:DiffWithSaved)
 function! s:DiffWithSaved()
   let filetype=&ft
   diffthis
@@ -506,15 +511,22 @@ function! ClearQuickfixList()
   call setqflist([])
 endfunction
 command! ClearQuickfixList call ClearQuickfixList()
-nnoremap <leader>sc :call ClearQuickfixList()<CR>
+nnoremap <leader>cc :call ClearQuickfixList()<CR>
 
 " ---JsonFormatter--- {{{2
-" function: Pipe buffer through python JSON formatting
+" function: Pipe buffer through python JSON formatting (:JSONFormatter)
 function! JSONFormatter()
   exe '%!python3 -m json.tool'
 endfunction
 com! JSONFormatter call JSONFormatter()
 
+" ---MarkCodeBlock--- {{{2
+" Add Markdown code-block current visual group (m_)
+function! s:MarkCodeBlock() abort
+    call append(line("'<")-1, '```')
+    call append(line("'>"), '```')
+endfunction
+xnoremap m_ :<c-u>call <sid>MarkCodeBlock()<CR>
 
 " ---- AUTOCMD: Final Commands ---- {{{1
 " note: these could move up to the Settings: FileType Editor area
@@ -546,4 +558,3 @@ endif
 "   autocmd!
 "   autocmd VimEnter * :Vexplore
 " augroup END
-"
