@@ -11,7 +11,7 @@
 # Variables
 # -------------------------------------
 
-export SSH_KEY_LOCATION="https://github.com/binarynomad.keys"
+export SSH_KEY_URL="https://github.com/binarynomad.keys"
 
 # -------------------------------------
 # Functions
@@ -40,7 +40,7 @@ reset_sshd_hostkeys() {
 # Main Program
 # -------------------------------------
 
-install_ssh_key ${SSH_KEY_LOCATION}
+install_ssh_key ${SSH_KEY_URL}
 reset_sshd_hostkeys
 
 
