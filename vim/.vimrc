@@ -252,9 +252,8 @@ set showtabline=2  " Show the TABLINE
 set splitbelow  " Default vertical splits to below
 set splitright  " Default horizontal splits to the right
 set title  " Show the filename in the window titlebar
-syntax on  " Enable syntax highlighting
 
-"---General Folding Settings---
+"---Folding Settings---
 set nofoldenable  " disable folding by default on file open
 set foldlevel=0  " fold everything except the top level
 set foldlevelstart=0  " fold everything except the top level
@@ -296,6 +295,7 @@ set wildmenu  " Enhance command-line completion
 " ---- SETTINGS: FileType Editor ---- {{{1
 "
 filetype plugin indent on  " Make sure we are loading user overwrites
+syntax on  " Enable syntax highlighting (after filetype on)
 
 " Create user overwrite directory for filetype
 " note: user file Locations  ~/.vim/after/ftplugin/<filetype>.vim
@@ -362,7 +362,6 @@ call plug#begin('~/.vim/plugged')
 "---TESTING Plugins---
 
 Plug 'chrisbra/csv.vim'   " plugin to edit CSV files (2021-07-29)
-Plug 'tpope/vim-markdown' " markdown syntax and list management
 
 
 "---General Env Plugins---
@@ -382,7 +381,6 @@ Plug 'liuchengxu/vim-which-key'         " show some of your mappings live
 Plug 'mbbill/undotree'                  " full undo tracking and diffs
 Plug 'mhinz/vim-startify'               " vim startup splashscreen
 Plug 'scrooloose/nerdtree'              " file_tree: remap <Leader>f<CR>
-" Plug 'terryma/vim-multiple-cursors'     " multi_cursor: Ctl-n
 
 "---TextObj Plugins---
 Plug 'glts/vim-textobj-comment'         " vic: select all in commented block
@@ -394,6 +392,7 @@ Plug 'wellle/targets.vim'               " smart selection between ([{<\"''\"}])
 "---Markdown Plugins---
 Plug 'itspriddle/vim-marked'            " launch MacOS Marked2.app
 Plug 'masukomi/vim-markdown-folding'    " markdown_header_folding
+Plug 'tpope/vim-markdown'               " markdown syntax and list management
 
 "---Coding Plugins---
 Plug 'FooSoft/vim-argwrap'              " spread_condense_arrays <L>1
@@ -529,6 +528,32 @@ function! s:MarkCodeBlock() abort
 endfunction
 xnoremap m_ :<c-u>call <sid>MarkCodeBlock()<CR>
 
+" ---- USER COMMANDS: Custom commands filtered through cli ---- {{{1
+"
+" GetEmails: filter all emails from a selection or whole file, sorted unique
+command -range=% -bar GetEmails :<line1>,<line2>!grep -aEio '([a-zA-Z0-9_\.\-]+)@([a-zA-Z0-9_\.\-]+)\.([a-zA-Z]{2,5})' | sort -u
+
+" GetDomains: filter all domains from a selection or whole file, sorted unique
+command -range=% -bar GetDomains :<line1>,<line2>!grep -iIohE '(([[:alpha:]](-?[[:alnum:]])*)\.)+[[:alpha:]]{2,}$' | sort -u
+
+" GetIPs: filter IP addresses from a selection or whole file, sorted
+command -range=% -bar GetIPs :<line1>,<line2>!grep -aEio '(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)' | sort -n
+
+" GetURLs: filter URL addresses from a selection or whole file, sorted unique
+command -range=% -bar GetURLs :<line1>,<line2>!grep -iIohE 'https?://[^[:space:]"]+' | sort -u
+
+" GetMAC: filter MAC addresses from a selection or whole file, sorted unique
+command -range=% -bar GetMAC :<line1>,<line2>!grep -aEio '(([0-9A-Fa-f]{2}[-:]){5}[0-9A-Fa-f]{2})|(([0-9A-Fa-f]{4}\.){2}[0-9A-Fa-f]{4})' | sort -n
+
+" Convert Filenames: Convert text to lowercase, replace spaces with dash
+command -range=% -bar Filename :<line1>,<line2>!tr 'A-Z' 'a-z' | tr '_,;: ' '-' | sed -E 's/-+/-/g'
+
+" URL Encode: Convert string to URL safe chars
+command -range=% -bar URLEncode :<line1>,<line2>!python3 -c 'import sys; from urllib import parse; print(parse.quote_plus(sys.stdin.read().strip()))'
+"
+" URL Decode: Convert URL to string
+command -range=% -bar URLDecode :<line1>,<line2>!python3 -c 'import sys; from urllib import parse; print(parse.unquote_plus(sys.stdin.read().strip()))'
+"
 " ---- AUTOCMD: Final Commands ---- {{{1
 " note: these could move up to the Settings: FileType Editor area
 
@@ -559,3 +584,5 @@ endif
 "   autocmd!
 "   autocmd VimEnter * :Vexplore
 " augroup END
+"
+
