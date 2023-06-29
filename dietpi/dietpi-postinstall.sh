@@ -36,11 +36,20 @@ reset_sshd_hostkeys() {
   fi
 }
 
+add_ip_notification() {
+  # Share IP info via a pushover notification using an API at DigitalOcean
+  if [[ -d "/etc/network/if-up.d" ]]; then
+    curl -L --no-clobber --output /etc/network/if-up.d/ip-notify https://github.com/binarynomad/common-configs/raw/main/dietpi/ip-notify.sh
+  fi
+}
+
+
 # -------------------------------------
 # Main Program
 # -------------------------------------
 
 install_ssh_key ${SSH_KEY_URL}
 reset_sshd_hostkeys
+add_ip_notification
 
 
