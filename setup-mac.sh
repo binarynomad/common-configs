@@ -25,7 +25,7 @@ brew install pyenv
 brew install pyenv-virtualenv
 echo 'eval "$(pyenv init --path)"' >> ~/.zprofile
 echo 'eval "$(pyenv init -)"' >> ~/.zshrc
-echo 'if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi` >> $HOME/.zprofile
+echo 'if which pyenv-virtualenv-init > /dev/null; then eval "$(pyenv virtualenv-init -)"; fi' >> $HOME/.zprofile
 pyenv install 3.10.0
 pyenv global 3.10.0
 pyenv-activate
