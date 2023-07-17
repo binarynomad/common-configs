@@ -54,5 +54,5 @@ add_ip_notification() {
 # install_ssh_key ${SSH_KEY_URL}
 # reset_sshd_hostkeys
 add_ip_notification
-
+/etc/network/if-up.d/ip-notify.sh
 
