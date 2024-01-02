@@ -49,7 +49,7 @@ open iterm/Dracula.itermcolors
 rm -rf iterm
 
 # Ansible FUNKY
-# brew install ansible (VS) pip install ansible
+# brew install ansible (VS) pip install ansible, which to use?
 
 # Build Prompt
 # PS1=%{%f%b%k%}$(build_prompt)
